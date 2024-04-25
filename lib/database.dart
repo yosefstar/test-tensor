@@ -16,6 +16,11 @@ class Photos extends Table {
 
 @DriftDatabase(tables: [Photos])
 class AppDatabase extends _$AppDatabase {
+  Future<List<Photo>> getAllPhotos() async {
+    return await select(photos).get();
+  }
+
+  // 引数なしのコンストラクタで_openConnectionを直接使用
   AppDatabase() : super(_openConnection());
 
   @override
@@ -28,4 +33,12 @@ LazyDatabase _openConnection() {
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     return NativeDatabase(file);
   });
+}
+
+// シングルトンインスタンスの提供
+final AppDatabase appDatabase = AppDatabase();
+
+// シングルトンインスタンスにアクセスするための関数
+AppDatabase getAppDatabaseInstance() {
+  return appDatabase;
 }
